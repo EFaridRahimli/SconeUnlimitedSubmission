@@ -61,8 +61,12 @@ import json
 THRESHOLD = 0.67
 
 def lambda_handler(event, context):
-    inferences = event.get("inferences")
-    
+    # classifier output is {statusCode, body: '<JSON string>'}; inferences live inside body
+    body = event.get("body")
+    if isinstance(body, str):
+        body = json.loads(body)
+    inferences = (body or event).get("inferences")
+
     if isinstance(inferences, str):
         inferences = json.loads(inferences)
 
